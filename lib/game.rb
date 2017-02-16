@@ -1,15 +1,15 @@
-require './square.rb'
-require './board.rb'
-require './pawn.rb'
-require './knight.rb'
-require './bishop.rb'
-require './rook.rb'
-require './queen.rb'
-require './king.rb'
+require './lib/square.rb'
+require './lib/board.rb'
+require './lib/pawn.rb'
+require './lib/knight.rb'
+require './lib/bishop.rb'
+require './lib/rook.rb'
+require './lib/queen.rb'
+require './lib/king.rb'
 
 class Game
 
-	attr_accessor :board
+	attr_accessor :board, :king_e1, :queen_d1, :rook_a1, :pawn_a2, :knight_b1, :bishop_c1, :pawn_d2, :pawn_f7, :pawn_c7
 
 	def initialize
 		@board = Board.new
