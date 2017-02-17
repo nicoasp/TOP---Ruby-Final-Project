@@ -10,63 +10,81 @@ class Game
 		@white_player = Player.new("white")
 		@black_player = Player.new("black")
 		@active_player = @white_player
-		@white_player.pieces = @board.white_pieces_array
-		@black_player.pieces = @board.black_pieces_array
+		@passive_player = @black_player
+		@white_player.active_pieces = @board.white_pieces_array
+		@black_player.active_pieces = @board.black_pieces_array
 	end
 
-	def white_king_checked?
-		@black_player.pointing_to?(@board.king_e1.position)
+	def check?
+		@passive_player.pointing_to?(@active_player.king.position)
 	end
 
-	def black_king_checked?
-		@white_player.pointing_to?(@board.king_e8.position)
+	def check_mate?
+		check && !active_player_can_move?
+	end
+
+	def stalemate?
+		!check && !active_player_can_move
+	end
+
+	def game_over?
+		!active_player_can_move
 	end
 
 	def change_active_player
-		@active_player = @black_player if @active_player == @white_player
-		@active_player = @white_player
+		if @active_player == @white_player
+			@active_player = @black_player 
+			@passive_player = @white_player
+		else
+			@active_player = @white_player
+			@passive_player = @black_player
+		end
 	end
 
-	def create_temp_board
-		Marshal.load(Marshal.dump(@board))
-	end
-		
-	# This method needs to be reworked:
-	def make_move_if_legal(piece_to_move, target_square)
-		# Checks if the piece you want to move is yours
-		return false unless @active_player.pieces.include?(piece_to_move)
-		piece_to_move.calculate_legal_moves
-		# Checks if the square you want to go is in reach of the piece
-		return false unless piece_to_move.possible_moves.include?(target_square)
-		# Makes the move (updates all relevant data)
+	def make_move(piece_to_move, target_square, test = false)
 		starting_square = piece_to_move.position
-		unless target_square.piece == nil
-			eaten_piece = target_square.piece 
-			eaten_piece.position = nil
-		end
+		eliminate_eaten_piece unless test
+		# Does not work. I need it to eliminate the piece also on test or it will give false positives on checks
 		piece_to_move.position = target_square
 		target_square.piece = piece_to_move
 		starting_square.piece = nil
-		# Checks if the move caused your king to be exposed
-		if piece_to_move.color == "white"
-			exposed_king = white_king_checked?
+	end
+
+	def move_legal?(piece_to_move, target_square)
+		return false unless @active_player.active_pieces.include?(piece_to_move)
+		piece_to_move.calculate_legal_moves
+		return false unless piece_to_move.possible_moves.include?(target_square)
+		temp_board = create_temp_board
+		make_move(temp_board.piece_to_move, temp_board.target_square, true)
+		if @active_player == @white_player
+			return false if @passive_player.pointing_to?(temp_board.king_e1.position)
 		else
-			exposed_king = black_king_checked?
-		end
-		# If the king was exposed by the move, it unmakes it
-		if exposed_king
-			starting_square.piece = piece_to_move
-			piece_to_move.position = starting_square
-			if eaten_piece
-				target_square.piece = eaten_piece
-				eaten_piece.position = target_square
-			else
-				target_square.piece = nil
-			end
-			return false
+			return false if @passive_player.pointing_to?(temp_board.king_e8.position)
 		end
 		true
 	end
+
+	def eliminate_eaten_piece(target_square)
+		target_square.piece.position = nil 
+		@passive_player.eaten_pieces << @passive_player.active_pieces.delete(target_square.piece)
+	end
+
+	def active_player_can_move?
+		@active_player.active_pieces.each do |piece|
+			piece.possible_moves.each do |move|
+				return true if move_legal?(piece, move)
+			end
+		end
+		false
+	end
+
+
+
+	private
+
+		def create_temp_board
+			Marshal.load(Marshal.dump(@board))
+		end
 
 
 end
