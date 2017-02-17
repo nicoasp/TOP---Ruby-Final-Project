@@ -1,11 +1,17 @@
 require './lib/square.rb'
+require './lib/pawn.rb'
+require './lib/knight.rb'
+require './lib/bishop.rb'
+require './lib/rook.rb'
+require './lib/queen.rb'
+require './lib/king.rb'
 
 # This class creates a board consisting of 64 Square objects 
 # populated with the appropriate relationships between them
 
 class Board
 
-	attr_accessor :squares_array, :a1, :a2, :a3, :a4, :a5, :a6, :a7, :a8, :b1, :b2, :b3, :b4, :b5, :b6, :b7, :b8, :c1, :c2, :c3, :c4, :c5, :c6, :c7, :c8, :d1, :d2, :d3, :d4, :d5, :d6, :d7, :d8, :e1, :e2, :e3, :e4, :e5, :e6, :e7, :e8, :f1, :f2, :f3, :f4, :f5, :f6, :f7, :f8, :g1, :g2, :g3, :g4, :g5, :g6, :g7, :g8, :h1, :h2, :h3, :h4, :h5, :h6, :h7, :h8
+	attr_accessor :squares_array, :a1, :a2, :a3, :a4, :a5, :a6, :a7, :a8, :b1, :b2, :b3, :b4, :b5, :b6, :b7, :b8, :c1, :c2, :c3, :c4, :c5, :c6, :c7, :c8, :d1, :d2, :d3, :d4, :d5, :d6, :d7, :d8, :e1, :e2, :e3, :e4, :e5, :e6, :e7, :e8, :f1, :f2, :f3, :f4, :f5, :f6, :f7, :f8, :g1, :g2, :g3, :g4, :g5, :g6, :g7, :g8, :h1, :h2, :h3, :h4, :h5, :h6, :h7, :h8, :pawn_a2, :pawn_b2, :pawn_c2, :pawn_d2, :pawn_e2, :pawn_f2, :pawn_g2, :pawn_h2, :pawn_a7, :pawn_b7, :pawn_c7, :pawn_d7, :pawn_e7, :pawn_f7, :pawn_g7, :pawn_h7, :rook_a1, :rook_h1, :rook_a8, :rook_h8, :knight_b1, :knight_g1, :knight_b8, :knight_g8, :bishop_c1, :bishop_f1, :bishop_c8, :bishop_f8, :queen_d1, :queen_d8, :king_e1, :king_e8
 
 	def initialize
 		@a1 = Square.new("a", 1)
@@ -73,6 +79,72 @@ class Board
 		@h7 = Square.new("h", 7)
 		@h8 = Square.new("h", 8)
 		@squares_array = [@a1, @a2, @a3, @a4, @a5, @a6, @a7, @a8, @b1, @b2, @b3, @b4, @b5, @b6, @b7, @b8, @c1, @c2, @c3, @c4, @c5, @c6, @c7, @c8, @d1, @d2, @d3, @d4, @d5, @d6, @d7, @d8, @e1, @e2, @e3, @e4, @e5, @e6, @e7, @e8, @f1, @f2, @f3, @f4, @f5, @f6, @f7, @f8, @g1, @g2, @g3, @g4, @g5, @g6, @g7, @g8, @h1, @h2, @h3, @h4, @h5, @h6, @h7, @h8]
+		@pawn_a2 = Pawn.new("white", @a2)
+		@a2.piece = @pawn_a2
+		@pawn_b2 = Pawn.new("white", @b2)
+		@b2.piece = @pawn_b2
+		@pawn_c2 = Pawn.new("white", @c2)
+		@c2.piece = @pawn_c2
+		@pawn_d2 = Pawn.new("white", @d2)
+		@d2.piece = @pawn_d2	
+		@pawn_e2 = Pawn.new("white", @e2)
+		@e2.piece = @pawn_e2
+		@pawn_f2 = Pawn.new("white", @f2)
+		@f2.piece = @pawn_f2
+		@pawn_g2 = Pawn.new("white", @g2)
+		@g2.piece = @pawn_g2
+		@pawn_h2 = Pawn.new("white", @h2)
+		@h2.piece = @pawn_h2		
+		@pawn_a7 = Pawn.new("black", @a7)
+		@a7.piece = @pawn_a7
+		@pawn_b7 = Pawn.new("black", @b7)
+		@b7.piece = @pawn_b7
+		@pawn_c7 = Pawn.new("black", @c7)
+		@c7.piece = @pawn_c7
+		@pawn_d7 = Pawn.new("black", @d7)
+		@d7.piece = @pawn_d7	
+		@pawn_e7 = Pawn.new("black", @e7)
+		@e7.piece = @pawn_e7
+		@pawn_f7 = Pawn.new("black", @f7)
+		@f7.piece = @pawn_f7
+		@pawn_g7 = Pawn.new("black", @g7)
+		@g7.piece = @pawn_g7
+		@pawn_h7 = Pawn.new("black", @h7)
+		@h7.piece = @pawn_h7	
+		@knight_b1 = Knight.new("white", @b1)
+		@b1.piece = @knight_b1
+		@knight_g1 = Knight.new("white", @g1)
+		@g1.piece = @knight_g1
+		@knight_b8 = Knight.new("black", @b8)
+		@b8.piece = @knight_b8
+		@knight_g8 = Knight.new("black", @g8)
+		@g8.piece = @knight_g8
+		@bishop_c1 = Bishop.new("white", @c1)
+		@c1.piece = @bishop_c1
+		@bishop_f1 = Bishop.new("white", @f1)
+		@f1.piece = @bishop_f1
+		@bishop_c8 = Bishop.new("black", @c8)
+		@c8.piece = @bishop_c8
+		@bishop_f8 = Bishop.new("black", @f8)
+		@f8.piece = @bishop_f8
+		@rook_a1 = Rook.new("white", @a1)
+		@a1.piece = @rook_a1
+		@rook_h1 = Rook.new("white", @h1)
+		@h1.piece = @rook_h1
+		@rook_a8 = Rook.new("black", @a8)
+		@a8.piece = @rook_a8
+		@rook_h8 = Rook.new("black", @h8)
+		@h8.piece = @rook_h8
+		@queen_d1 = Queen.new("white", @d1)
+		@d1.piece = @queen_d1
+		@queen_d8 = Queen.new("black", @d8)
+		@d8.piece = @queen_d8
+		@king_e1 = King.new("white", @e1)
+		@e1.piece = @king_e1
+		@king_e8 = King.new("black", @e8)
+		@e8.piece = @king_e8
+		@white_pieces_array = [@queen_d1, @rook_a1, @rook_h1, @bishop_c1, @bishop_f1, @knight_b1, @knight_g1, @pawn_a2, @pawn_b2, @pawn_c2, @pawn_d2, @pawn_e2, @pawn_f2, @pawn_g2, @pawn_h2, @king_e1]
+		@black_pieces_array = [@queen_d8, @rook_a8, @rook_h8, @bishop_c8, @bishop_f8, @knight_b8, @knight_g8, @pawn_a7, @pawn_b7, @pawn_c7, @pawn_d7, @pawn_e7, @pawn_f7, @pawn_g7, @pawn_h7, @king_e8]
 		calculate_white_pawn_advances
 		calculate_black_pawn_advances
 		calculate_white_pawn_captures
