@@ -16,8 +16,8 @@ class Player
 		@eaten_pieces = []
 	end
 
-	def pointing_to(square)
-		@active_pieces.each do |piece|
+	def pointing_to(square, pieces = @active_pieces)
+		pieces.each do |piece|
 			piece.calculate_legal_moves
 			piece.possible_moves.each do |sq|
 				return true if sq == square

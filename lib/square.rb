@@ -19,7 +19,7 @@ class Square
 	end
 
 
-	def occupied_by(color = nil)
+	def occupied_by?(color = nil)
 		return @piece != nil unless color
 		@piece != nil && @piece.color == color
 	end

@@ -18,14 +18,14 @@ class Piece
 
 
 	def add_move(square)
-		@possible_moves << square unless square.occupied_by(@color)
+		@possible_moves << square unless square.occupied_by?(@color)
 	end
 
 	def add_moves_path(path_array)
 		path_array.each do |sq|
-			if sq.occupied_by(@color)
+			if sq.occupied_by?(@color)
 				return
-			elsif sq.occupied_by(opposite_color)
+			elsif sq.occupied_by?(opposite_color)
 				@possible_moves << sq
 				return
 			else

@@ -1,10 +1,37 @@
 require "board"
 
 describe Board do
-	describe "#calculate_bishop_paths" do
-		before do
-			subject.calculate_bishop_paths
+
+	describe "#make_move" do
+		context "in opening position" do
+			before do
+				subject.make_move(subject.pawn_e2, subject.e4)
+			end
+			it "makes opening moves correctly" do
+				expect(subject.pawn_e2.position).to eql(subject.e4)
+				expect(subject.e4.piece).to eql(subject.pawn_e2)
+				expect(subject.e2.piece).to be_nil
+			end
 		end
+		context "when eating piece" do
+			before do
+				subject.make_move(subject.pawn_e2, subject.e4)
+				subject.make_move(subject.knight_g8, subject.f6)
+				subject.make_move(subject.knight_g8, subject.e4)
+			end
+			it "makes move correctly" do
+				expect(subject.pawn_e2.position).to be_nil
+				expect(subject.e4.piece).to eql(subject.knight_g8)
+				expect(subject.knight_g8.position).to eql(subject.e4)
+			end
+			it "eliminates eaten piece" do
+				expect(subject.white_pieces_array).not_to include(subject.pawn_e2)
+			end
+		end
+				
+	end
+
+	describe "#calculate_bishop_paths" do
 		it "calculates right paths for a1" do
 			expect(subject.a1.bishop_paths).to include([subject.b2, subject.c3, subject.d4, subject.e5, subject.f6, subject.g7, subject.h8])
 		end
@@ -21,9 +48,6 @@ describe Board do
 	end
 
 	describe "#calculate_knight_squares" do
-		before do
-			subject.calculate_knight_squares
-		end
 		it "calculates right paths for a1" do
 			expect(subject.a1.knight_squares).to include(subject.b3, subject.c2)
 		end
@@ -36,9 +60,6 @@ describe Board do
 	end
 
 	describe "#calculate_rook_paths" do
-		before do
-			subject.calculate_rook_paths
-		end
 		it "calculates right paths for a1" do
 			expect(subject.a1.rook_paths).to include([subject.a2, subject.a3, subject.a4, subject.a5, subject.a6, subject.a7, subject.a8])
 			expect(subject.a1.rook_paths).to include([subject.b1, subject.c1, subject.d1, subject.e1, subject.f1, subject.g1, subject.h1])
@@ -57,9 +78,6 @@ describe Board do
 	end
 
 	describe "#calculate_queen_paths" do
-		before do
-			subject.calculate_queen_paths
-		end
 		it "calculates right paths for a1" do
 			expect(subject.a1.queen_paths).to include([subject.a2, subject.a3, subject.a4, subject.a5, subject.a6, subject.a7, subject.a8])
 			expect(subject.a1.queen_paths).to include([subject.b1, subject.c1, subject.d1, subject.e1, subject.f1, subject.g1, subject.h1])
@@ -85,9 +103,6 @@ describe Board do
 	end
 
 	describe "#calculate_king_squares" do
-		before do
-			subject.calculate_king_squares
-		end
 		it "calculates right paths for a1" do
 			expect(subject.a1.king_squares).to include(subject.a2, subject.b2, subject.b1)
 		end
@@ -100,9 +115,6 @@ describe Board do
 	end
 
 	describe "#calculate_white_pawn_advances" do
-		before do
-			subject.calculate_white_pawn_advances
-		end
 		it "calculates right paths for a2" do
 			expect(subject.a2.white_pawn_advances).to include([subject.a3, subject.a4])
 		end
@@ -118,9 +130,6 @@ describe Board do
 	end
 
 	describe "#calculate_black_pawn_advances" do
-		before do
-			subject.calculate_black_pawn_advances
-		end
 		it "calculates right paths for a7" do
 			expect(subject.a7.black_pawn_advances).to include([subject.a6, subject.a5])
 		end
@@ -136,9 +145,6 @@ describe Board do
 	end
 
 	describe "#calculate_white_pawn_captures" do
-		before do
-			subject.calculate_white_pawn_captures
-		end
 		it "calculates right paths for a2" do
 			expect(subject.a2.white_pawn_captures).to eql([subject.b3])
 		end
@@ -154,9 +160,6 @@ describe Board do
 	end
 
 	describe "#calculate_black_pawn_captures" do
-		before do
-			subject.calculate_black_pawn_captures
-		end
 		it "calculates right paths for a7" do
 			expect(subject.a7.black_pawn_captures).to eql([subject.b6])
 		end

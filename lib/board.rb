@@ -6,12 +6,13 @@ require './lib/rook.rb'
 require './lib/queen.rb'
 require './lib/king.rb'
 
-# This class creates a board consisting of 64 Square objects 
+# This class creates a board consisting of 64 Square objects
+# and 32 Piece objects, 
 # populated with the appropriate relationships between them
 
 class Board
 
-	attr_accessor :squares_array, :a1, :a2, :a3, :a4, :a5, :a6, :a7, :a8, :b1, :b2, :b3, :b4, :b5, :b6, :b7, :b8, :c1, :c2, :c3, :c4, :c5, :c6, :c7, :c8, :d1, :d2, :d3, :d4, :d5, :d6, :d7, :d8, :e1, :e2, :e3, :e4, :e5, :e6, :e7, :e8, :f1, :f2, :f3, :f4, :f5, :f6, :f7, :f8, :g1, :g2, :g3, :g4, :g5, :g6, :g7, :g8, :h1, :h2, :h3, :h4, :h5, :h6, :h7, :h8, :pawn_a2, :pawn_b2, :pawn_c2, :pawn_d2, :pawn_e2, :pawn_f2, :pawn_g2, :pawn_h2, :pawn_a7, :pawn_b7, :pawn_c7, :pawn_d7, :pawn_e7, :pawn_f7, :pawn_g7, :pawn_h7, :rook_a1, :rook_h1, :rook_a8, :rook_h8, :knight_b1, :knight_g1, :knight_b8, :knight_g8, :bishop_c1, :bishop_f1, :bishop_c8, :bishop_f8, :queen_d1, :queen_d8, :king_e1, :king_e8
+	attr_accessor :squares_array, :a1, :a2, :a3, :a4, :a5, :a6, :a7, :a8, :b1, :b2, :b3, :b4, :b5, :b6, :b7, :b8, :c1, :c2, :c3, :c4, :c5, :c6, :c7, :c8, :d1, :d2, :d3, :d4, :d5, :d6, :d7, :d8, :e1, :e2, :e3, :e4, :e5, :e6, :e7, :e8, :f1, :f2, :f3, :f4, :f5, :f6, :f7, :f8, :g1, :g2, :g3, :g4, :g5, :g6, :g7, :g8, :h1, :h2, :h3, :h4, :h5, :h6, :h7, :h8, :pawn_a2, :pawn_b2, :pawn_c2, :pawn_d2, :pawn_e2, :pawn_f2, :pawn_g2, :pawn_h2, :pawn_a7, :pawn_b7, :pawn_c7, :pawn_d7, :pawn_e7, :pawn_f7, :pawn_g7, :pawn_h7, :rook_a1, :rook_h1, :rook_a8, :rook_h8, :knight_b1, :knight_g1, :knight_b8, :knight_g8, :bishop_c1, :bishop_f1, :bishop_c8, :bishop_f8, :queen_d1, :queen_d8, :king_e1, :king_e8, :white_pieces_array, :black_pieces_array
 
 	def initialize
 		@a1 = Square.new("a", 1)
@@ -154,6 +155,43 @@ class Board
 		calculate_rook_paths
 		calculate_queen_paths
 		calculate_king_squares
+	end
+
+	public
+
+	def make_move(piece_to_move, target_square)
+		starting_square = piece_to_move.position
+		eliminate_eaten_piece(target_square) unless target_square.piece.nil?
+		piece_to_move.position = target_square
+		target_square.piece = piece_to_move
+		starting_square.piece = nil
+	end
+
+	def white_king_checked?
+		pointing_to(black_pieces_array, king_e1.position)
+	end
+
+	def black_king_checked?
+		pointing_to(white_pieces_array, king_e8.position)
+	end
+
+
+	private
+
+	def eliminate_eaten_piece(target_square)
+		target_square.piece.position = nil 
+		@white_pieces_array.delete(target_square.piece)
+		@black_pieces_array.delete(target_square.piece)
+	end
+
+	def pointing_to(pieces, square)
+		pieces.each do |piece|
+			piece.calculate_legal_moves
+			piece.possible_moves.each do |sq|
+				return true if sq == square
+			end
+		end
+		false
 	end
 
 	def add_square(start_square, condition_l_diff, condition_n_diff, array_to_add)

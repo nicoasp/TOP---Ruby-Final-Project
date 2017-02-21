@@ -21,12 +21,12 @@ class Pawn < Piece
 
 
 	def add_move(square)
-		@possible_moves << square unless (square.occupied_by(@color) || square.occupied_by(opposite_color))
+		@possible_moves << square unless (square.occupied_by?(@color) || square.occupied_by?(opposite_color))
 	end
 
 	def add_moves_path(path_array)
 		path_array.each do |sq|
-			if sq.occupied_by(@color) && sq.occupied_by(opposite_color)
+			if sq.occupied_by?(@color) && sq.occupied_by?(opposite_color)
 				return
 			else
 				@possible_moves << sq
@@ -46,7 +46,7 @@ class Pawn < Piece
 
 	def calculate_captures(paths)
 		paths.each do |sq|
-			@possible_moves << sq if sq.occupied_by(opposite_color)
+			@possible_moves << sq if sq.occupied_by?(opposite_color)
 		end
 	end
 
