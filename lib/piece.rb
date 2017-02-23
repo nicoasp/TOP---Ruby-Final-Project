@@ -3,7 +3,7 @@ require './lib/square.rb'
 class Piece
 
 	attr_accessor :position, :possible_moves
-	attr_reader :color, :type, :symbol
+	attr_reader :color, :type, :symbol, :moves_record
 
 	def initialize(color, position)
 		@color = color
@@ -11,6 +11,7 @@ class Piece
 		@possible_moves = []
 		@type = nil
 		@symbol = nil
+		@moves_record = []
 	end
 
 	def opposite_color

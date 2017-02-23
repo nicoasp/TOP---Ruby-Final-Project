@@ -2,8 +2,8 @@ require './lib/board.rb'
 
 class Move
 
-	attr_accessor :board
-	attr_reader :temp_board, :valid_notation, :error_type, :player_pieces, :enemy_player_pieces, :standard_notation_move, :piece_type, :eating_move, :specification, :target_position, :target_square, :starting_square, :piece_to_move, :eaten_piece
+	attr_accessor :board, :piece_to_move
+	attr_reader :temp_board, :valid_notation, :error_type, :player_pieces, :enemy_player_pieces, :standard_notation_move, :piece_type, :eating_move, :specification, :target_position, :target_square, :starting_square, :eaten_piece
 
 	def initialize(board, player, standard_notation_move)
 		@board = board
@@ -16,6 +16,12 @@ class Move
 		@eating_move = false
 		@specification = false
 		@promotion = false
+		@castle_short = false
+		@castle_long = false
+		@castle_king = nil
+		@castle_rook = nil
+		@castle_king_target = nil
+		@castle_rook_target = nil
 		@valid_notation = false
 		@error_type = ""
 		@target_position = ""
@@ -40,6 +46,10 @@ class Move
 			@error_type = "No piece can make that move" if @error_type.empty?
 			return false
 		end
+		if (@castle_short && !castle_short_legal?) || (@castle_long && !castle_long_legal?)
+			@error_type = "Cannot castle"
+			return false
+		end
 		make_move_internal
 		if (@player == "white" && temp_board.white_king_checked?) || (@player == "black" && temp_board.black_king_checked?)
 			@error_type = "Move would leave king exposed"
@@ -52,13 +62,15 @@ class Move
 	private
 
 	def make_move_internal
-		if !@promotion
+		if @promotion
+			pawn_promotion
+		elsif @castle_short || @castle_long
+			king_castle
+		else
 			eliminate_eaten_piece if @eaten_piece
 			@piece_to_move.position = @target_square
 			@target_square.piece = @piece_to_move
-			@starting_square.piece = nil
-		else
-			pawn_promotion
+			@starting_square.piece = nil			
 		end
 	end
 
@@ -71,12 +83,35 @@ class Move
 		@target_square.piece = new_queen
 	end
 
+	def castle_short_legal?
+		@player == "white" ? (@board.king_e1.moves_record.empty? && @board.rook_h1.moves_record.empty? && @board.f1.piece == nil && @board.g1.piece == nil) : (@board.king_e8.moves_record.empty? && @board.rook_h8.moves_record.empty? && @board.f8.piece == nil && @board.g8.piece == nil)
+	end
+
+	def castle_long_legal?
+		@player == "white" ? (@board.king_e1.moves_record.empty? && @board.rook_a1.moves_record.empty? && @board.b1.piece == nil && @board.c1.piece == nil && @board.d1.piece == nil) : (@board.king_e8.moves_record.empty? && @board.rook_a8.moves_record.empty? && @board.b8.piece == nil && @board.c8.piece == nil && @board.d8.piece == nil)
+	end
+
+	def king_castle
+		starting_square_king = @castle_king.position
+		starting_square_rook = @castle_rook.position
+		@castle_king.position = @castle_king_target
+		@castle_king_target.piece = @castle_king
+		@castle_rook.position = @castle_rook_target
+		@castle_rook_target.piece = @castle_rook
+		starting_square_king.piece = nil
+		starting_square_rook.piece = nil
+	end
+
 	def eliminate_eaten_piece
 		@eaten_piece.position = nil
 		@enemy_player_pieces.delete(@eaten_piece)
 	end
 
 	def set_up_move(board)
+		if @castle_short || @castle_long
+			set_up_castle(board)
+			return
+		end
 		@target_square = board.squares_array.select {|sq| sq.position == @target_position}[0]
 		@player == "white" ? @player_pieces = board.white_pieces_array : @player_pieces = board.black_pieces_array
 		@player == "black" ? @enemy_player_pieces = board.white_pieces_array : @enemy_player_pieces = board.black_pieces_array
@@ -105,6 +140,34 @@ class Move
 		end
 	end
 
+	def set_up_castle(board)
+		if @player == "white"
+			@piece_to_move = board.king_e1
+			@castle_king = board.king_e1
+			if @castle_short
+				@castle_rook = board.rook_h1
+				@castle_king_target = board.g1
+				@castle_rook_target = board.f1
+			else
+				@castle_rook = board.rook_a1
+				@castle_king_target = board.c1
+				@castle_rook_target = board.d1
+			end				
+		else
+			@piece_to_move = board.king_e8
+			@castle_king = board.king_e8
+			if @castle_short
+				@castle_rook = board.rook_h8
+				@castle_king_target = board.g8
+				@castle_rook_target = board.f8
+			else
+				@castle_rook = board.rook_a8
+				@castle_king_target = board.c8
+				@castle_rook_target = board.d8
+			end
+		end
+	end
+
 	def parse_notation
 		case standard_notation_move.length
 		when 2
@@ -127,6 +190,9 @@ class Move
 				when "K"
 					@piece_type = "king"
 				end
+			elsif standard_notation_move == "O-O"
+				@castle_short = true
+				@valid_notation = true
 			end
 		when 4
 			if standard_notation_move.match(/[BNRQK]x[a-h][1-8]/)
@@ -182,6 +248,9 @@ class Move
 				when "K"
 					@piece_type = "king"
 				end
+			elsif standard_notation_move == "O-O-O"
+				@castle_long = true
+				@valid_notation = true
 			end
 		end
 		if @valid_notation

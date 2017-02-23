@@ -24,6 +24,7 @@ class Game
 		change_active_player
 		@move_error = nil
 		@moves_record << standard_notation_move
+		move.piece_to_move.moves_record << standard_notation_move
 	end
 
 	def move_legal?(standard_notation_move)
