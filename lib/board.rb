@@ -15,70 +15,70 @@ class Board
 	attr_accessor :squares_array, :a1, :a2, :a3, :a4, :a5, :a6, :a7, :a8, :b1, :b2, :b3, :b4, :b5, :b6, :b7, :b8, :c1, :c2, :c3, :c4, :c5, :c6, :c7, :c8, :d1, :d2, :d3, :d4, :d5, :d6, :d7, :d8, :e1, :e2, :e3, :e4, :e5, :e6, :e7, :e8, :f1, :f2, :f3, :f4, :f5, :f6, :f7, :f8, :g1, :g2, :g3, :g4, :g5, :g6, :g7, :g8, :h1, :h2, :h3, :h4, :h5, :h6, :h7, :h8, :pawn_a2, :pawn_b2, :pawn_c2, :pawn_d2, :pawn_e2, :pawn_f2, :pawn_g2, :pawn_h2, :pawn_a7, :pawn_b7, :pawn_c7, :pawn_d7, :pawn_e7, :pawn_f7, :pawn_g7, :pawn_h7, :rook_a1, :rook_h1, :rook_a8, :rook_h8, :knight_b1, :knight_g1, :knight_b8, :knight_g8, :bishop_c1, :bishop_f1, :bishop_c8, :bishop_f8, :queen_d1, :queen_d8, :king_e1, :king_e8, :white_pieces_array, :black_pieces_array
 
 	def initialize
-		@a1 = Square.new("a", 1)
+		@a1 = Square.new("a", 1, "\u2B1B")
 		@a2 = Square.new("a", 2)
-		@a3 = Square.new("a", 3)
+		@a3 = Square.new("a", 3, "\u2B1B")
 		@a4 = Square.new("a", 4)
-		@a5 = Square.new("a", 5)
+		@a5 = Square.new("a", 5, "\u2B1B")
 		@a6 = Square.new("a", 6)
-		@a7 = Square.new("a", 7)
+		@a7 = Square.new("a", 7, "\u2B1B")
 		@a8 = Square.new("a", 8)
 		@b1 = Square.new("b", 1)
-		@b2 = Square.new("b", 2)
+		@b2 = Square.new("b", 2, "\u2B1B")
 		@b3 = Square.new("b", 3)
-		@b4 = Square.new("b", 4)
+		@b4 = Square.new("b", 4, "\u2B1B")
 		@b5 = Square.new("b", 5)
-		@b6 = Square.new("b", 6)
+		@b6 = Square.new("b", 6, "\u2B1B")
 		@b7 = Square.new("b", 7)
-		@b8 = Square.new("b", 8)
-		@c1 = Square.new("c", 1)
+		@b8 = Square.new("b", 8, "\u2B1B")
+		@c1 = Square.new("c", 1, "\u2B1B")
 		@c2 = Square.new("c", 2)
-		@c3 = Square.new("c", 3)
+		@c3 = Square.new("c", 3, "\u2B1B")
 		@c4 = Square.new("c", 4)
-		@c5 = Square.new("c", 5)
+		@c5 = Square.new("c", 5, "\u2B1B")
 		@c6 = Square.new("c", 6)
-		@c7 = Square.new("c", 7)
+		@c7 = Square.new("c", 7, "\u2B1B")
 		@c8 = Square.new("c", 8)
 		@d1 = Square.new("d", 1)
-		@d2 = Square.new("d", 2)
+		@d2 = Square.new("d", 2, "\u2B1B")
 		@d3 = Square.new("d", 3)
-		@d4 = Square.new("d", 4)
+		@d4 = Square.new("d", 4, "\u2B1B")
 		@d5 = Square.new("d", 5)
-		@d6 = Square.new("d", 6)
+		@d6 = Square.new("d", 6, "\u2B1B")
 		@d7 = Square.new("d", 7)
-		@d8 = Square.new("d", 8)
-		@e1 = Square.new("e", 1)
+		@d8 = Square.new("d", 8, "\u2B1B")
+		@e1 = Square.new("e", 1, "\u2B1B")
 		@e2 = Square.new("e", 2)
-		@e3 = Square.new("e", 3)
+		@e3 = Square.new("e", 3, "\u2B1B")
 		@e4 = Square.new("e", 4)
-		@e5 = Square.new("e", 5)
+		@e5 = Square.new("e", 5, "\u2B1B")
 		@e6 = Square.new("e", 6)
-		@e7 = Square.new("e", 7)
+		@e7 = Square.new("e", 7, "\u2B1B")
 		@e8 = Square.new("e", 8)
 		@f1 = Square.new("f", 1)
-		@f2 = Square.new("f", 2)
+		@f2 = Square.new("f", 2, "\u2B1B")
 		@f3 = Square.new("f", 3)
-		@f4 = Square.new("f", 4)
+		@f4 = Square.new("f", 4, "\u2B1B")
 		@f5 = Square.new("f", 5)
-		@f6 = Square.new("f", 6)
+		@f6 = Square.new("f", 6, "\u2B1B")
 		@f7 = Square.new("f", 7)
-		@f8 = Square.new("f", 8)
-		@g1 = Square.new("g", 1)
+		@f8 = Square.new("f", 8, "\u2B1B")
+		@g1 = Square.new("g", 1, "\u2B1B")
 		@g2 = Square.new("g", 2)
-		@g3 = Square.new("g", 3)
+		@g3 = Square.new("g", 3, "\u2B1B")
 		@g4 = Square.new("g", 4)
-		@g5 = Square.new("g", 5)
+		@g5 = Square.new("g", 5, "\u2B1B")
 		@g6 = Square.new("g", 6)
-		@g7 = Square.new("g", 7)
+		@g7 = Square.new("g", 7, "\u2B1B")
 		@g8 = Square.new("g", 8)
 		@h1 = Square.new("h", 1)
-		@h2 = Square.new("h", 2)
+		@h2 = Square.new("h", 2, "\u2B1B")
 		@h3 = Square.new("h", 3)
-		@h4 = Square.new("h", 4)
+		@h4 = Square.new("h", 4, "\u2B1B")
 		@h5 = Square.new("h", 5)
-		@h6 = Square.new("h", 6)
+		@h6 = Square.new("h", 6, "\u2B1B")
 		@h7 = Square.new("h", 7)
-		@h8 = Square.new("h", 8)
+		@h8 = Square.new("h", 8, "\u2B1B")
 		@squares_array = [@a1, @a2, @a3, @a4, @a5, @a6, @a7, @a8, @b1, @b2, @b3, @b4, @b5, @b6, @b7, @b8, @c1, @c2, @c3, @c4, @c5, @c6, @c7, @c8, @d1, @d2, @d3, @d4, @d5, @d6, @d7, @d8, @e1, @e2, @e3, @e4, @e5, @e6, @e7, @e8, @f1, @f2, @f3, @f4, @f5, @f6, @f7, @f8, @g1, @g2, @g3, @g4, @g5, @g6, @g7, @g8, @h1, @h2, @h3, @h4, @h5, @h6, @h7, @h8]
 		@pawn_a2 = Pawn.new("white", @a2)
 		@a2.piece = @pawn_a2
@@ -159,13 +159,6 @@ class Board
 
 	public
 
-	def make_move(piece_to_move, target_square)
-		starting_square = piece_to_move.position
-		eliminate_eaten_piece(target_square) unless target_square.piece.nil?
-		piece_to_move.position = target_square
-		target_square.piece = piece_to_move
-		starting_square.piece = nil
-	end
 
 	def white_king_checked?
 		pointing_to(black_pieces_array, king_e1.position)
@@ -177,12 +170,6 @@ class Board
 
 
 	private
-
-	def eliminate_eaten_piece(target_square)
-		target_square.piece.position = nil 
-		@white_pieces_array.delete(target_square.piece)
-		@black_pieces_array.delete(target_square.piece)
-	end
 
 	def pointing_to(pieces, square)
 		pieces.each do |piece|
@@ -312,11 +299,7 @@ class Board
 		end
 	end
 
-
-
-
 end
-
 
 
 

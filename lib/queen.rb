@@ -4,7 +4,8 @@ class Queen < Piece
 
 	def initialize(color, position)
 		super
-
+		@type = "queen"
+		find_symbol
 	end
 
 	def calculate_legal_moves

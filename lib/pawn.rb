@@ -6,6 +6,8 @@ class Pawn < Piece
 
 	def initialize(color, position)
 		super
+		@type = "pawn"
+		find_symbol
 	end
 
 	def calculate_legal_moves
@@ -26,7 +28,7 @@ class Pawn < Piece
 
 	def add_moves_path(path_array)
 		path_array.each do |sq|
-			if sq.occupied_by?(@color) && sq.occupied_by?(opposite_color)
+			if sq.occupied_by?(@color) || sq.occupied_by?(opposite_color)
 				return
 			else
 				@possible_moves << sq

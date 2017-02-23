@@ -3,12 +3,14 @@ require './lib/square.rb'
 class Piece
 
 	attr_accessor :position, :possible_moves
-	attr_reader :color
+	attr_reader :color, :type, :symbol
 
 	def initialize(color, position)
 		@color = color
 		@position = position
 		@possible_moves = []
+		@type = nil
+		@symbol = nil
 	end
 
 	def opposite_color
@@ -42,6 +44,27 @@ class Piece
 			else
 				add_move(path)
 			end
+		end
+	end
+
+	def inspect
+		self.symbol
+	end
+
+	def find_symbol
+		case @type
+		when "pawn"
+			@color == "white" ? @symbol = "\u2659" : @symbol = "\u265F"
+		when "knight"
+			@color == "white" ? @symbol = "\u2658" : @symbol = "\u265E"
+		when "bishop"
+			@color == "white" ? @symbol = "\u2657" : @symbol = "\u265D"
+		when "rook"
+			@color == "white" ? @symbol = "\u2656" : @symbol = "\u265C"
+		when "queen"
+			@color == "white" ? @symbol = "\u2655" : @symbol = "\u265B"
+		when "king"
+			@color == "white" ? @symbol = "\u2654" : @symbol = "\u265A"
 		end
 	end
 

@@ -4,6 +4,8 @@ class Bishop < Piece
 
 	def initialize(color, position)
 		super
+		@type = "bishop"
+		find_symbol
 	end
 
 	def calculate_legal_moves
