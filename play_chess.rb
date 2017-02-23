@@ -59,11 +59,11 @@ until game.game_over?
 end
 sleep 1
 if game.check_mate?
-	display_board(game.board)
+	display_board(game.board, game.active_player)
 	sleep 1
 	puts "#{game.active_player} is check-mated! #{game.passive_player} wins!"
 elsif game.stalemate?
-	display_board(game.board)
+	display_board(game.board, game.active_player)
 	sleep 1
 	puts "#{game.active_player} is stalemated! The game is a tie!"
 end

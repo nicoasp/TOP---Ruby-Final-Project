@@ -5,13 +5,17 @@ class Move
 	attr_accessor :board, :piece_to_move
 	attr_reader :temp_board, :valid_notation, :error_type, :player_pieces, :enemy_player_pieces, :standard_notation_move, :piece_type, :eating_move, :specification, :target_position, :target_square, :starting_square, :eaten_piece
 
-	def initialize(board, player, standard_notation_move)
+	def initialize(board, player, standard_notation_move, en_passant_position = nil)
 		@board = board
 		@temp_board = Marshal.load(Marshal.dump(@board))
 		@player = player
 		@player_pieces = nil
 		@enemy_player_pieces = nil
 		@standard_notation_move = standard_notation_move
+		@en_passant_position = en_passant_position
+		@en_passant_move = false
+		@en_passant_target = ""
+		en_passant_target if @en_passant_position
 		@piece_type = ""
 		@eating_move = false
 		@specification = false
@@ -66,6 +70,8 @@ class Move
 			pawn_promotion
 		elsif @castle_short || @castle_long
 			king_castle
+		elsif @en_passant_move
+			en_passant_capture
 		else
 			eliminate_eaten_piece if @eaten_piece
 			@piece_to_move.position = @target_square
@@ -102,6 +108,15 @@ class Move
 		starting_square_rook.piece = nil
 	end
 
+	def en_passant_capture
+		@eaten_piece.position.piece = nil
+		eliminate_eaten_piece
+		@piece_to_move.position = @target_square
+		@target_square.piece = @piece_to_move
+		@starting_square.piece = nil
+	end
+
+
 	def eliminate_eaten_piece
 		@eaten_piece.position = nil
 		@enemy_player_pieces.delete(@eaten_piece)
@@ -110,6 +125,9 @@ class Move
 	def set_up_move(board)
 		if @castle_short || @castle_long
 			set_up_castle(board)
+			return
+		elsif @en_passant_move
+			set_up_en_passant(board)
 			return
 		end
 		@target_square = board.squares_array.select {|sq| sq.position == @target_position}[0]
@@ -168,6 +186,28 @@ class Move
 		end
 	end
 
+	def set_up_en_passant(board)
+		starting_position = en_passant_positions.select {|position| position[0] == @specification}[0]
+		@starting_square = board.squares_array.select {|sq| sq.position == starting_position}[0]
+		@piece_to_move = @starting_square.piece
+		@target_square = board.squares_array.select {|sq| sq.position == @en_passant_target}[0]
+		@eaten_piece = board.squares_array.select {|sq| sq.position == @en_passant_position}[0].piece
+		@player == "white" ? @player_pieces = board.white_pieces_array : @player_pieces = board.black_pieces_array
+		@player == "black" ? @enemy_player_pieces = board.white_pieces_array : @enemy_player_pieces = board.black_pieces_array
+	end
+
+	def en_passant_positions
+		position1 = "#{(@en_passant_position[0].ord - 1).chr}#{@en_passant_position[1]}"
+		position2 = "#{(@en_passant_position[0].ord + 1).chr}#{@en_passant_position[1]}"
+		[position1, position2]
+	end
+
+	def en_passant_target
+		@en_passant_target = "#{@en_passant_position[0]}6" if @en_passant_position[1] == "5"
+		@en_passant_target = "#{@en_passant_position[0]}3" if @en_passant_position[1] == "4"
+	end
+
+
 	def parse_notation
 		case standard_notation_move.length
 		when 2
@@ -210,11 +250,14 @@ class Move
 				when "K"
 					@piece_type = "king"
 				end
-			elsif standard_notation_move.match(/[a-h]x[a-h][1-8]/)
+			elsif standard_notation_move.match(/[a-h]x[a-h][1-8]/) && (standard_notation_move[0].ord - standard_notation_move[2].ord).abs == 1
 				@valid_notation = true
 				@eating_move = true
 				@specification = @standard_notation_move[0]
 				@piece_type = "pawn"
+				if @en_passant_position && standard_notation_move[-2, 2] == @en_passant_target
+					@en_passant_move = true
+				end
 			elsif standard_notation_move.match(/[BNRQK][a-h1-8][a-h][1-8]/)
 				@valid_notation = true
 				@specification = standard_notation_move[1]

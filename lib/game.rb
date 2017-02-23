@@ -14,36 +14,36 @@ class Game
 		@passive_player = "black"
 		@move_error = nil
 		@moves_record = []
+		@en_passant_position = nil
 	end
 
 	public
 
 	def make_move(standard_notation_move)
-		move = Move.new(@board, @active_player, standard_notation_move)
+		if en_passant_possible?
+			move = Move.new(@board, @active_player, standard_notation_move, @en_passant_position)
+		else
+			move = Move.new(@board, @active_player, standard_notation_move)
+		end
 		move.make_move
 		change_active_player
 		@move_error = nil
 		@moves_record << standard_notation_move
 		move.piece_to_move.moves_record << standard_notation_move
+		@en_passant_position = nil
 	end
 
 	def move_legal?(standard_notation_move)
-		move = Move.new(@board, @active_player, standard_notation_move)
+		if en_passant_possible?
+			move = Move.new(@board, @active_player, standard_notation_move, @en_passant_position)
+		else
+			move = Move.new(@board, @active_player, standard_notation_move)
+		end
 		if move.move_legal?
 			return true
 		else
 			@move_error = move.error_type
 			return false
-		end
-	end
-
-	def change_active_player
-		if @active_player == "white"
-			@active_player = "black"
-			@passive_player = "white"
-		else
-			@active_player = "white"
-			@passive_player = "black"
 		end
 	end
 
@@ -70,44 +70,39 @@ class Game
 		game_over? && !active_player_checked?
 	end
 
-	def add_pawn_special_moves
-		if @active_player == "white" && @moves_record.last.match(/[a-h]5/)
-			# Add legal move to pawns... but it might get overwritten while calculating if next move is legal
+	private
+
+	def change_active_player
+		if @active_player == "white"
+			@active_player = "black"
+			@passive_player = "white"
+		else
+			@active_player = "white"
+			@passive_player = "black"
 		end
 	end
-end
 
-
-=begin
-
-	def check?
-		@passive_player.pointing_to?(@active_player.king.position)
-	end
-
-	def check_mate?
-		check && !active_player_can_move?
-	end
-
-	def stalemate?
-		!check && !active_player_can_move?
-	end
-
-	def game_over?
-		!active_player_can_move?
-	end
-
-	def active_player_can_move?
-		@active_player.active_pieces.each do |piece|
-			piece.possible_moves.each do |move|
-				return true if move_legal?(piece, move)
+	def en_passant_possible?
+		return false if @moves_record.empty?
+		last_move = @moves_record.last
+		if last_move.length == 2 && last_move.match(/[a-h][45]/)
+			pawn_moved = @board.squares_array.select {|sq| sq.position == last_move}[0].piece
+			if pawn_moved.moves_record.size == 1
+				@en_passant_position = last_move
+				positions_to_check = en_passant_positions
+				squares_to_check = @board.squares_array.select {|sq| positions_to_check.include?(sq.position)}
+				squares_to_check.each {|sq| return true if (sq.occupied_by?(@active_player) && sq.piece.type == "pawn")}
 			end
 		end
 		false
 	end
 
-=end
-
-
+	def en_passant_positions
+		position1 = "#{(@en_passant_position[0].ord - 1).chr}#{@en_passant_position[1]}"
+		position2 = "#{(@en_passant_position[0].ord + 1).chr}#{@en_passant_position[1]}"
+		[position1, position2]
+	end
+end
 
 
 
