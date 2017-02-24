@@ -67,6 +67,5 @@ elsif game.stalemate?
 	sleep 1
 	puts "#{game.active_player} is stalemated! The game is a tie!"
 end
-sleep 1
-p game.moves_record
+
 sleep 2
